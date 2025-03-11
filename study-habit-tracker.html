@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Habit Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #f9f7f7;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        /* Menu Button */
+        .menu-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        /* Menu Dropdown */
+        .menu-dropdown {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 15px;
+            background-color: #ffb3cc;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            width: 150px;
+            z-index: 1000;
+        }
+
+        .menu-dropdown a {
+            text-decoration: none;
+            color: #ff66b2;
+            font-size: 18px;
+            display: block;
+            padding: 8px 0;
+            text-align: center;
+        }
+
+        .menu-dropdown a:hover {
+            background-color: #ff99cc;
+        }
+
+        /* Header Section */
+        /* Header Section */
+    .header {
+    background-color: #ffb6c1;
+    padding: 30px;
+    font-size: 50px;
+    color: #ff66b2;
+    margin: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    margin-top: 20px;
+    font-family: 'Dancing Script', cursive; /* Cursive font */
+    font-weight: bold; /* Bold effect */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Optional: adds a soft shadow effect */
+    }
+
+
+        .container {
+            padding: 40px;
+            margin-top: 40px;
+        }
+
+        h2 {
+            color: #ff66b2;
+            margin-bottom: 20px;
+        }
+
+        /* Input Fields */
+        .input-field {
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: 2px solid #ffb3cc;
+            background-color: #fff;
+            margin-bottom: 15px;
+            width: 250px;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #ff66b2;
+            outline: none;
+        }
+
+        /* Task Box */
+        .task-box {
+            background-color: #ffd1dc;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            width: 60%;
+            margin: 20px auto;
+        }
+
+        /* Completed Tasks */
+        .task-box.completed {
+            text-decoration: line-through;
+            background-color: #d4f1f4;
+        }
+
+        /* Button Styling */
+        .button {
+            padding: 12px 28px;
+            background-color: #ffb3cc;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #ff99cc;
+        }
+
+        /* Calendar */
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-top: 40px;
+        }
+
+        .calendar-day {
+            padding: 15px;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-day.completed {
+            background-color: #4db8b4;
+            color: white;
+        }
+
+        .calendar-day:hover {
+            transform: scale(1.1);
+        }
+
+        .month-header {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff66b2;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Menu Button -->
+    <div class="menu-btn" onclick="toggleMenu()">&#8942;</div>
+
+    <!-- Dropdown Menu -->
+    <div class="menu-dropdown" id="menuDropdown">
+        <a href="connect1.html">Logout</a> <!-- Link to the login page -->
+        <a href="graph.html">Current Graph</a>
+    <a href="help.html">Help</a> <!-- Help option now links to the help page -->
+
+    </div>
+
+    <div class="header">
+        Study Habit Tracker
+    </div>
+
+    <div class="container">
+        <h2>Track Your Study Habits</h2>
+
+        <!-- Enter Task & Duration -->
+        <input type="text" id="task-name" class="input-field" placeholder="Enter task (e.g., Reading)">
+        <input type="number" id="task-duration" class="input-field" placeholder="Duration in hours">
+        <button class="button" onclick="addTask()">Add Task</button>
+
+        <!-- Task List -->
+        <div id="task-list"></div>
+
+        <!-- Month Header -->
+        <div id="month-header" class="month-header"></div>
+
+        <!-- Calendar -->
+        <h3>Calendar</h3>
+        <div class="calendar" id="calendar"></div>
+    </div>
+    
+    <script>
+        let tasks = [];
+        const daysInMonth = 30; // Number of days in the month
+
+        // Get today's date
+        const today = new Date();
+        const currentDay = today.getDate() - 1;  // Subtract 1 for 0-based index
+        const currentMonth = today.getMonth();  // 0-11 for months (January = 0, December = 11)
+
+        // Array to map month numbers to names
+        const months = [
+            "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+        ];
+
+        // Set month header dynamically
+        document.getElementById('month-header').innerText = `${months[currentMonth]} ${today.getFullYear()}`;
+
+        // Render calendar
+        function renderCalendar() {
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
+
+            // Loop through days in the month
+            for (let i = 0; i < daysInMonth; i++) {
+                const calendarDay = document.createElement('div');
+                calendarDay.classList.add('calendar-day');
+                calendarDay.innerText = `Day ${i + 1}`;
+                calendar.appendChild(calendarDay);
+            }
+        }
+
+        // Add task function
+        function addTask() {
+            const taskName = document.getElementById('task-name').value;
+            const taskDuration = document.getElementById('task-duration').value;
+
+            if (taskName && taskDuration) {
+                const task = {
+                    name: taskName,
+                    duration: taskDuration,
+                    completed: false
+                };
+
+                tasks.push(task);
+                renderTasks();
+            } else {
+                alert("Please enter both task and duration.");
+            }
+
+            document.getElementById('task-name').value = '';
+            document.getElementById('task-duration').value = '';
+        }
+
+        // Render tasks
+        function renderTasks() {
+            const taskList = document.getElementById('task-list');
+            taskList.innerHTML = '';
+
+            tasks.forEach((task, index) => {
+                const taskBox = document.createElement('div');
+                taskBox.classList.add('task-box');
+                if (task.completed) taskBox.classList.add('completed');
+
+                taskBox.innerHTML = `
+                    <span>${task.name} for ${task.duration} hours</span>
+                    <input type="checkbox" ${task.completed ? 'checked' : ''} onclick="toggleCompletion(${index})">
+                `;
+                taskList.appendChild(taskBox);
+            });
+        }
+
+        // Toggle task completion
+        function toggleCompletion(index) {
+            tasks[index].completed = !tasks[index].completed;
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            renderTasks();
+            renderCalendar();
+            checkIfAllTasksCompleted();
+            // If all tasks are completed for today, mark today's calendar day as completed
+            
+        }
+
+        // Check if all tasks are completed
+        function checkIfAllTasksCompleted() {
+            const allCompleted = tasks.every(task => task.completed);
+
+            if (allCompleted) {
+                markTodayAsCompleted();
+            }
+        }
+
+        // Mark today in calendar as completed
+        function markTodayAsCompleted() {
+            const calendarDays = document.querySelectorAll('.calendar-day');
+            const todayCalendarDay = calendarDays[currentDay];
+
+            if (todayCalendarDay) {
+                todayCalendarDay.classList.add('completed');
+            }
+        }
+
+        // Toggle the menu dropdown
+        function toggleMenu() {
+            const menu = document.getElementById('menuDropdown');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Initial render
+        renderCalendar();
+        function viewGraph() {
+        localStorage.setItem('taskCompletionData', JSON.stringify(getCompletionData())); // Store task data
+        window.location.href = 'current-graph.html'; // Redirect to the graph page
+    }
+
+    // Get the completion data from the tasks (1 for completed, 0 for not completed)
+    function getCompletionData() {
+        return tasks.map(task => task.completed ? 1 : 0); // Mapping each task to 1 (completed) or 0 (not completed)
+    }
+   renderCalender();
+    
+    </script>
+
+</body>
+</html>

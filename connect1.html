@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Sign Up - Study Habit Tracker</title>
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #f9f7f7;
+            text-align: center;
+            padding: 100px 0;
+        }
+
+        /* Heading Style for "Study Habit Tracker" */
+        .header {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 36px;
+            color: #ff66b2; /* Barbie pink color */
+            margin-bottom: 20px;
+        }
+
+        .container {
+            width: 300px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .input-field {
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: 2px solid #ffb3cc;
+            background-color: #fff;
+            margin-bottom: 15px;
+            width: 100%;
+            transition: border-color 0.3s ease;
+        }
+        .input-field:focus {
+            border-color: #ff66b2;
+            outline: none;
+        }
+        .button {
+            padding: 12px 28px;
+            background-color: #ffb3cc;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            background-color: #ff99cc;
+        }
+        .show-password {
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .form-container {
+            margin-bottom: 30px;
+        }
+        .form-container h2 {
+            margin-bottom: 20px;
+        }
+        .toggle-link {
+            color: #ff66b2;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">Study Habit Tracker</div> <!-- Study Habit Tracker Heading -->
+
+    <div class="container" id="login-container">
+        <div class="form-container" id="login-form">
+            <h2>Login</h2>
+            <input type="email" class="input-field" id="login-email" placeholder="Enter your email" required>
+            <input type="password" class="input-field" id="login-password" placeholder="Enter your password" required>
+            
+            <!-- Show/Hide Password Checkbox -->
+            <div class="show-password">
+                <label for="login-show-password">
+                    <input type="checkbox" id="login-show-password"> Show Password
+                </label>
+            </div>
+
+            <button class="button" onclick="login()">Login</button>
+            <p>Don't have an account? <span class="toggle-link" onclick="showSignUp()">Sign Up</span></p>
+        </div>
+
+        <!-- Sign Up Form -->
+        <div class="form-container" id="sign-up-form" style="display:none;">
+            <h2>Sign Up</h2>
+            <input type="text" class="input-field" id="signup-username" placeholder="Enter your username" required>
+            <input type="email" class="input-field" id="signup-email" placeholder="Enter your email" required>
+            <input type="password" class="input-field" id="signup-password" placeholder="Enter your password" required>
+            
+            <!-- Show/Hide Password Checkbox -->
+            <div class="show-password">
+                <label for="signup-show-password">
+                    <input type="checkbox" id="signup-show-password"> Show Password
+                </label>
+            </div>
+
+            <button class="button" onclick="signUp()">Sign Up</button>
+            <p>Already have an account? <span class="toggle-link" onclick="showLogin()">Login</span></p>
+        </div>
+    </div>
+
+    <script>
+        // Variable to keep track of previously entered email (for repetition check)
+        let previousEmail = '';
+
+        // Toggle password visibility for login
+        document.getElementById('login-show-password').addEventListener('change', function() {
+            const passwordField = document.getElementById('login-password');
+            if (this.checked) {
+                passwordField.type = 'text'; // Show password
+            } else {
+                passwordField.type = 'password'; // Hide password
+            }
+        });
+
+        // Toggle password visibility for sign up
+        document.getElementById('signup-show-password').addEventListener('change', function() {
+            const passwordField = document.getElementById('signup-password');
+            if (this.checked) {
+                passwordField.type = 'text'; // Show password
+            } else {
+                passwordField.type = 'password'; // Hide password
+            }
+        });
+
+        // Switch to Sign Up form
+        function showSignUp() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('sign-up-form').style.display = 'block';
+        }
+
+        // Switch to Login form
+        function showLogin() {
+            document.getElementById('sign-up-form').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+        }
+
+        // Login Function
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            // Check if email is entered
+            if (!email || !password) {
+                alert("Please enter both email and password.");
+                return;
+            }
+
+            // Check if the email format is valid
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                alert("Please enter a valid email address.");
+                return;
+            }
+
+            // Check for password length (max 8 characters)
+            if (password.length > 8) {
+                alert("Password must be 8 characters or less.");
+                return;
+            }
+
+            // If all checks pass, redirect to the Welcome Page
+            window.location.href = 'welcome.html';
+        }
+
+        // Sign Up Function
+        function signUp() {
+            const username = document.getElementById('signup-username').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+
+            // Check if username, email, and password are entered
+            if (!username || !email || !password) {
+                alert("Please enter all fields: username, email, and password.");
+                return;
+            }
+
+            // Check if the email format is valid
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                alert("Please enter a valid email address.");
+                return;
+            }
+
+            // Check if the email is already used (email repetition check)
+            if (email === previousEmail) {
+                alert("This email is already used. Please make changes to the email.");
+                return;
+            }
+            previousEmail = email;
+            // Check for password length (max 8 characters)
+            if (password.length > 8) {
+                alert("Password must be 8 characters .");
+                return;
+            }
+            if (password.length < 8) {
+                alert("Password must be 8 characters .");
+                return;
+            }
+            // Store the email and username (to prevent repetition)
+            
+
+            // Redirect to the Welcome Page upon successful sign up
+            window.location.href = 'welcome.html';
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Graph</title>
+    <!-- Include Chart.js Version 3.9.1 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            text-align: center;
+            background-color: #f9f7f7;
+        }
+
+        .header {
+            background-color: #ffb6c1;
+            padding: 30px;
+            font-size: 34px;
+            color: #ff66b2;
+            margin: 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .container {
+            padding: 40px;
+            margin-top: 40px;
+        }
+
+        .button {
+            padding: 12px 28px;
+            background-color: #ffb3cc;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #ff99cc;
+        }
+
+        #graph {
+            width: 80%;
+            margin: 20px auto;
+        }
+
+        h2 {
+            color: #ff66b2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        Current Condition Graph
+    </div>
+
+    <div class="container">
+        <h2>Study Habits Completion</h2>
+
+        <!-- Chart Container -->
+        <div id="graph">
+            <canvas id="taskCompletionChart"></canvas> <!-- Graph will be rendered here -->
+        </div>
+
+        <button class="button" onclick="window.location.href='study-habit-tracker.html'">Back to Tracker</button>
+
+    </div>
+
+    <script>
+        // Wait for the DOM to load before executing
+        document.addEventListener('DOMContentLoaded', function () {
+            // Simulated data: Example of tasks completed on specific days
+            const taskCompletionData = [2, 3, 1, 4, 5, 6, 3, 2, 5, 4, 3, 5, 2, 6, 4, 3, 4, 5, 6, 3, 4, 2, 5, 6, 4, 3, 2, 5, 6, 4];
+
+            // Get the context of the canvas element
+            const ctx = document.getElementById('taskCompletionChart').getContext('2d');
+
+            // Create the chart
+            new Chart(ctx, {
+                type: 'bar', // You can change this to 'line' for a line chart
+                data: {
+                    labels: Array.from({ length: taskCompletionData.length }, (_, i) => `Day ${i + 1}`), // Label each day
+                    datasets: [{
+                        label: 'Tasks Completed',
+                        data: taskCompletionData, // The data for completed tasks
+                        backgroundColor: '#4db8b4', // Color of the bars
+                        borderColor: '#4db8b4', // Border color for the bars
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
